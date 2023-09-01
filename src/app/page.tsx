@@ -1,19 +1,26 @@
+"use client";
+
+import { getList } from "@/api/list/list";
 import List from "@/component/list";
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 
-const fetchApi = async () => {
-  const response = await fetch("http://localhost:3000/api/hello");
-  const result = response.json();
-  console.log(result, ": response.json()");
-  return result;
-};
+export default function App() {
+  const queryClient = new QueryClient();
 
-export default async function Home() {
-  const list: string[] = await fetchApi();
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Main />
+    </QueryClientProvider>
+  );
+}
 
+function Main() {
+  const { data } = useQuery(["list"], () => getList());
+  console.log(data, ":data");
   return (
     <div className="bg-slate-400 py-20 px-10 grid gap-10 min-h-screen">
       <div className="bg-white p-10 rounded-3xl shadow-xl">
-        <List list={list} />
+        <List list={data} />
       </div>
     </div>
   );
